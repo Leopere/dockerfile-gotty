@@ -1,0 +1,25 @@
+version: '3.4'
+
+networks:
+  traefik:
+    external: true
+
+services:
+  tty:
+    build: .
+    tty: true
+    expose:
+      - 8080
+    volumes:
+      - '~/:/root'
+    restart: always
+    labels:
+      - traefik.port=8080
+      - traefik.frontend.rule=Host:tty.nixc.us
+      - "traefik.backend=tty"
+      - "traefik.docker.network=traefik"
+      ## USER PASSWORD
+      - traefik.frontend.auth.basic.users=USER:PASSWORDHASH # user:password, see https://docs.traefik.io/configuration/backends/docker/#on-containers
+      - "traefik.expose=true"
+    networks:
+      - traefik
